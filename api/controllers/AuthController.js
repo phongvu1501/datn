@@ -15,7 +15,7 @@ module.exports = {
                 return res.paramInvalid({ errorMsg: 'Username and password are required' });
             }
             let rs = await Auth.checkExistUser(username);
-            if (rs.errorCode !== 0) {
+            if (rs.errorCode !== constant.SUCCESS_CODE) {
                 return res.paramInvalid({ errorMsg: rs.errorMsg });
             }
             return res.success({ data: { id: new Date().toString(), username, password } });
