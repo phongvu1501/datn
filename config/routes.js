@@ -14,6 +14,10 @@ module.exports.routes = {
     controller: 'AuthController',
     action: 'register',
   },
+  'POST /api/user/student': {
+    controller: 'UserController',
+    action: 'student',
+  },
 
 
 

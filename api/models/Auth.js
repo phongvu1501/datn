@@ -1,10 +1,3 @@
-/**
- * Auth.js
- *
- * @description :: A model definition represents a database table/collection.
- * @docs        :: https://sailsjs.com/docs/concepts/models-and-orm/models
- */
-
 setTimeout(async () => {
   try {
 
@@ -17,44 +10,45 @@ setTimeout(async () => {
       client: 'student',
       status: 'active',
     };
+
     let finds = await Auth.findOne({ id: 1 });
     if (finds?.id) {
       let updated = await Auth.update({ id: { '>': 0 } }, { status: 'inactive' });
+      console.log('User status updated:', updated);
     }
-    // let created = await Auth.create(data);
 
-    //navtive
+    //navtive query example
     let rs = await sails.sendNativeQuery('SELECT * FROM auth WHERE id = 1');
     console.log({ rs });
 
-    // transaction
-
+    // Transaction
     await sails.getDatastore().transaction(async (db, done) => {
       try {
-        let phone = '09876666655'
-        // let userObj = await User.updateOne({ id: 1 }, { phone }).usingConnection(db);
+        let phone = '09876666655';
+
+        // Cập nhật thông tin trong transaction
         let updated = await Auth.update({ id: 1 }, { phone }).usingConnection(db);
-        console.log({ updated });
-        done() // rollback
-        // done() // commit
+        console.log('User updated within transaction:', updated);
+
+        // Commit transaction
+        done();
       } catch (error) {
-        throw new Error('Transaction error');
+        // Rollback transaction nếu có lỗi
+        console.error('Transaction error:', error);
+        done(error); // rollback
       }
-    })
-
-    // handel notification
-
-
+    });
 
     console.log({ finds });
+
   } catch (error) {
     return common.serverError(error);
   }
 
 }, 3 * 1000);
 
-
 module.exports = {
+
   attributes: {
     user: {
       type: 'number',
@@ -91,20 +85,15 @@ module.exports = {
       isIn: ['active', 'inactive', 'locked', 'deleted'],
       defaultsTo: 'active',
     },
-
-
   },
-
-
 
   checkExistUser: async function (username) {
     // Check if the user exists in the database
-    const isExsited = username === '1234567890'
-    if (isExsited) {
+    const isExisted = username === '1234567890';
+    if (isExisted) {
       return common.error({ errorMsg: 'User already exists' }); // Simulate a user already exists
     }
-    return common.success({ data: { id: 1111 } }); // // Simulate a user not found
+    return common.success({ data: { id: 1111 } }); // Simulate a user not found
   }
 
 };
-
