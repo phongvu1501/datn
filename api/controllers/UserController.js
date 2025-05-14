@@ -8,58 +8,19 @@
 module.exports = {
   student: async function (req, res) {
     try {
-      const { username, email, age } = req.body;
-
-      console.log('Received info:', req.body);
-
-      // Kiểm tra đầu vào
-      if (!username || !email || typeof age !== 'number') {
-        return res.paramInvalid({
-          errorMsg: 'Username, email and age are required. Age must be a number.',
-        });
+      const { username, password } = req.body;
+      console.log('info', req.info);
+      console.log('register', req.body);
+      if (!username || !password) {
+        return res.paramInvalid({ errorMsg: 'Thành công' });
       }
-
-      // Kiểm tra username đã tồn tại chưa
-      const existing = await User.findOne({ name: username });
-      if (existing) {
-        return res.paramInvalid({ errorMsg: 'Username already exists.' });
+      let rs = await Auth.checkExistUser(username);
+      if (rs.errorCode !== constant.SUCCESS_CODE) {
+        return res.paramInvalid({ errorMsg: rs.errorMsg });
       }
-
-      // Tạo user mới
-      const newUser = await User.create({
-        name: username,
-        email,
-        age,
-      }).fetch();
-
-      console.log(' User created:', newUser);
-
-      // Cập nhật user ID = 1 nếu tồn tại
-      const found = await User.findOne({ id: 1 });
-      if (found) {
-        const updated = await User.updateOne({ id: 1 }).set({ age: 25 });
-        console.log(' User updated (ID=1):', updated);
-      }
-
-      // Transaction: cập nhật tuổi user ID = 1
-      await sails.getDatastore().transaction(async (db, proceed) => {
-        try {
-          const updatedTx = await User.updateOne({ id: 1 })
-            .set({ age: 30 })
-            .usingConnection(db);
-          console.log('User updated in transaction:', updatedTx);
-          proceed(); // commit
-        } catch (err) {
-          console.error(' Transaction failed:', err);
-          proceed(err); // rollback
-        }
-      });
-
-      return res.success({ data: newUser });
-
+      return res.success({ data: { id: new Date().toString(), username, password } });
     } catch (error) {
-      console.error(' Error in UserController:', error);
       return res.serverError(error);
     }
-  }
+  },
 };

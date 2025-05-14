@@ -10,14 +10,11 @@
 
 module.exports.policies = {
   AuthController: {
-    register: ['verifyDevice', 'basic'], // isStudent
-    login: ['verifyDevice', 'basic'], // isStudent
-    logout: ['verifyDevice', 'basic'], // isStudent
-    changePassword: ['verifyDevice', 'basic'], // isStudent
-    forgotPassword: ['verifyDevice', 'basic'], // isStudent
-    resetPassword: ['verifyDevice', 'basic'], // isStudent
-    verifyEmail: ['verifyDevice', 'basic'], // isStudent
-    verifyPhone: ['verifyDevice', 'basic'], // isStudent  
+    register: ['verifyDevice', 'basic'], // 
+  },
+
+  UserController: {
+    student: ['verifyDevice', 'basic'], // isStudent
   }
 
 
