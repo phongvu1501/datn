@@ -8,17 +8,17 @@
 module.exports = {
   student: async function (req, res) {
     try {
-      const { username, password } = req.body;
+      const { name, email, age } = req.body;
       console.log('info', req.info);
-      console.log('register', req.body);
-      if (!username || !password) {
+      console.log('student', req.body);
+      if (!name || !email || !age) {
         return res.paramInvalid({ errorMsg: 'Thành công' });
       }
-      let rs = await Auth.checkExistUser(username);
+      let rs = await User.checkExistUser(name);
       if (rs.errorCode !== constant.SUCCESS_CODE) {
         return res.paramInvalid({ errorMsg: rs.errorMsg });
       }
-      return res.success({ data: { id: new Date().toString(), username, password } });
+      return res.success({ data: { id: new Date().toString(), name, email, age } });
     } catch (error) {
       return res.serverError(error);
     }

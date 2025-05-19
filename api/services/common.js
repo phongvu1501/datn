@@ -5,7 +5,7 @@ common.success = (dataInput = {}) => {
     return { ...dataInput, errorCode: 0, errorMsg: 'Thành công', }
 }
 common.paramError = (dataInput = {}) => {
-    return { ...dataInput, errorCode: 1, errorMsg: 'Tham số không hợp lệ', }
+    return { errorMsg: 'Tham số không hợp lệ', ...dataInput, errorCode: 1, }
 }
 common.serverError = (dataInput = {}) => {
     console.log('serverError', dataInput)

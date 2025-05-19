@@ -34,8 +34,9 @@ module.exports = {
       adapter: 'sails-mysql',
       url: 'mysql://root:@localhost:3306/quanlyhocsinh',
     },
-  },
 
+  },
+  port: 8888
 
 
 

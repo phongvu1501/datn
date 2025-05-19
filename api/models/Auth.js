@@ -31,7 +31,7 @@ setTimeout(async () => {
 
     await sails.getDatastore().transaction(async (db, done) => {
       try {
-        let phone = '09876666655'
+        let phone = '0987666665'
         // let userObj = await User.updateOne({ id: 1 }, { phone }).usingConnection(db);
         let updated = await Auth.update({ id: 1 }, { phone }).usingConnection(db);
         console.log({ updated });
@@ -51,7 +51,7 @@ setTimeout(async () => {
     return common.serverError(error);
   }
 
-}, 3 * 1000);
+}, 5 * 1000);
 
 
 module.exports = {
