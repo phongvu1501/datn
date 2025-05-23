@@ -18,6 +18,21 @@ module.exports.routes = {
     controller: 'UserController',
     action: 'student',
   },
+    'GET /api/user/student': {
+    controller: 'UserController',
+    action: 'show',
+  },
+  'GET /api/user/student/:id': {
+    controller: 'UserController',
+    action: 'show',
+  },
+
+  'DELETE /api/user/student/:id': {
+    controller: 'UserController',
+    action: 'delete',
+  },
+
+
 
 
 
