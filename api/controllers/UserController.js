@@ -94,6 +94,42 @@ module.exports = {
 
 
   //3:update                    
+update: async function (rep, res) {
+  try {
+    const userId = req.param('id');
+    const updatedData = req.body;
+
+    if (!userId || !updatedData) {
+      return res.badRequest({
+        errorCode: 400,
+        errorMsg: 'ID hoặc dữ liệu cập nhật không hợp lệ.',
+      });
+    }
+
+    const updatedUser = await User.updateOne({ id: userId }).set(updatedData);
+
+    if (!updatedUser) {
+      return res.notFound({
+        errorCode: 404,
+        errorMsg: 'Không tìm thấy sinh viên với ID đã cung cấp.',
+      });
+    }
+
+    sails.log.info('Updated user:', updatedUser.id);
+    return res.ok({
+      message: 'Cập nhật sinh viên thành công.',
+      user: updatedUser,
+    });
+
+  } catch (err) {
+    sails.log.error('Error updating user:', err);
+    return res.serverError({
+      errorCode: 500,
+      errorMsg: 'Lỗi không xác định.',
+      details: err.message,
+    });
+  }
+},
 
 
 
