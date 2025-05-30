@@ -6,173 +6,64 @@
  */
 
 module.exports = {
-  student: async function (req, res) {
-    // try {
-    //   const { name, email, age } = req.body;
-    //   console.log('info', req.info);
-    //   console.log('student', req.body);
-    //   if (!name || !email || !age) {
-    //     return res.paramInvalid({ errorMsg: 'Thành công' });
-    //   }
-    //   let rs = await User.checkExistUser(name);
-    //   if (rs.errorCode !== constant.SUCCESS_CODE) {
-    //     return res.paramInvalid({ errorMsg: rs.errorMsg });
-    //   }
-    //   return res.success({ data: { id: new Date().toString(), name, email, age } });
-    // } catch (error) {
-    //   return res.serverError(error);
-    // }
-    //1:Thêm
-    try {
-      const newUser = await User.create(req.body);
-      if (!newUser) {
-        return res.status(400).json({
-          error: 'Thất bại khi tạo sinh viên mới.',
-        });
-      }
-      return res.status(201).json({
-        message: 'Thành công',
-        user: newUser,
-      });
-    } catch (error) {
-      if (error.code === 'E_UNIQUE') {
-        return res.status(400).json({
-          error: 'A student with this fullName or email already exists.',
-        });
-      }
-      return res.status(500).json({
-        error: 'Thất bại',
-        details: error.message,
-      });
+  // Thêm sinh viên
+  student: async (req, res) => {
+    const { fullName, email } = req.body;
+    if (!fullName || !email) {
+      return res.badRequest({ error: 'Thiếu tên hoặc email.' });
     }
 
-  },
-
-  //2:show
-
-  show: async function (req, res) {
     try {
-      const userId = req.param('id');
-
-      if (userId) {
-        const user = await User.findOne({ id: userId });
-
-        if (!user) {
-          return res.notFound({
-            errorCode: 404,
-            errorMsg: 'Không tìm thấy sinh viên với ID đã cung cấp.'
-          });
-        }
-
-        sails.log.info('Found user by ID:', user.id);
-        return res.ok(user);
-
-      } else {
-
-        const allUsers = await User.find();
-
-        if (!allUsers || allUsers.length === 0) {
-          return res.notFound({
-            errorCode: 404,
-            errorMsg: 'No users found.'
-          });
-        }
-
-        sails.log.info('Found all users. Total:', allUsers.length);
-        return res.ok(allUsers);
-      }
-
+      const user = await User.create(req.body).fetch();
+      return res.status(201).json({ message: 'Tạo thành công', user });
     } catch (err) {
-      sails.log.error('Error fetching user(s):', err);
-      return res.serverError({
-        errorCode: 500,
-        errorMsg: 'An unexpected error occurred while fetching student(s).',
-        details: err.message,
-      });
+      const msg = err.code === 'E_UNIQUE' ? 'Tên hoặc email đã tồn tại.' : err.message;
+      return res.status(400).json({ error: msg });
     }
   },
 
+  // Lấy 1 hoặc nhiều sinh viên
+  show: async (req, res) => {
+    try {
+      const id = req.param('id');
+      const result = id ? await User.findOne({ id }) : await User.find();
+      if (!result || (Array.isArray(result) && !result.length)) {
+        return res.notFound({ error: 'Không tìm thấy sinh viên.' });
+      }
+      return res.ok(result);
+    } catch (err) {
+      return res.serverError({ error: err.message });
+    }
+  },
 
-  //3:update                    
-update: async function (rep, res) {
-  try {
-    const userId = req.param('id');
-    const updatedData = req.body;
-
-    if (!userId || !updatedData) {
-      return res.badRequest({
-        errorCode: 400,
-        errorMsg: 'ID hoặc dữ liệu cập nhật không hợp lệ.',
-      });
+  // Cập nhật sinh viên
+  update: async (req, res) => {
+    const id = req.param('id');
+    if (!id || !Object.keys(req.body).length) {
+      return res.badRequest({ error: 'Thiếu ID hoặc dữ liệu cập nhật.' });
     }
 
-    const updatedUser = await User.updateOne({ id: userId }).set(updatedData);
+    try {
+      const user = await User.updateOne({ id }).set(req.body);
+      return user ? res.ok({ message: 'Cập nhật thành công', user }) : res.notFound({ error: 'Không tìm thấy sinh viên.' });
+    } catch (err) {
+      return res.serverError({ error: err.message });
+    }
+  },
 
-    if (!updatedUser) {
-      return res.notFound({
-        errorCode: 404,
-        errorMsg: 'Không tìm thấy sinh viên với ID đã cung cấp.',
-      });
+  // Xóa sinh viên
+  delete: async (req, res) => {
+    const id = req.param('id');
+    if (!id) {
+      return res.badRequest({ error: 'Thiếu ID sinh viên.' });
     }
 
-    sails.log.info('Updated user:', updatedUser.id);
-    return res.ok({
-      message: 'Cập nhật sinh viên thành công.',
-      user: updatedUser,
-    });
-
-  } catch (err) {
-    sails.log.error('Error updating user:', err);
-    return res.serverError({
-      errorCode: 500,
-      errorMsg: 'Lỗi không xác định.',
-      details: err.message,
-    });
+    try {
+      const user = await User.destroyOne({ id });
+      return user ? res.ok({ message: 'Đã xóa', user }) : res.notFound({ error: 'Không tìm thấy sinh viên.' });
+    } catch (err) {
+      return res.serverError({ error: err.message });
+    }
   }
-},
-
-
-
-
-//4:delete
-
-delete: async function (req, res) {
-  try {
-    const userId = req.param('id');
-
-    if (!userId) {
-      return res.badRequest({
-        errorCode: 400,
-        errorMsg: 'ID không hợp lệ.',
-      });
-    }
-
-    const deletedUser = await User.destroyOne({ id: userId });
-
-    if (!deletedUser) {
-      return res.notFound({
-        errorCode: 404,
-        errorMsg: 'Không tìm thấy sinh viên với ID đã cung cấp.',
-      });
-    }
-
-    sails.log.info('Deleted user:', deletedUser.id);
-    return res.ok({
-      message: 'Xóa sinh viên thành công.',
-      user: deletedUser,
-    });
-
-  } catch (err) {
-    sails.log.error('Error deleting user:', err);
-    return res.serverError({
-      errorCode: 500,
-      errorMsg: 'Lỗi không xác định.',
-      details: err.message,
-    });
-  }
-},
-
-
-
-
 };
+
