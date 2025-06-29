@@ -30,13 +30,16 @@ module.exports = {
   *                                                                         *
   **************************************************************************/
   datastores: {
-    default: {
-      adapter: 'sails-mysql',
-      url: 'mysql://root:@localhost:3306/quanlyhocsinh',
-    },
+    managerDatabase: {
+      adapter: 'sails-mongo',
+      // url: 'mongodb+srv://phongvvph52328:<db_password>@cluster0.crqbfpo.mongodb.net/',
+      // url: 'mongodb+srv://phongvvph52328:pPVSREOW7u8BlhK1@cluster0.crqbfpo.mongodb.net/quanlyhocsinh',//pPVSREOW7u8BlhK1
+      url: 'mongodb+srv://phongvvph52328:pPVSREOW7u8BlhK1@cluster0.crqbfpo.mongodb.net/quanlyhocsinh'
+    }
+
 
   },
-  port: 3000,
+  port: 1337,
 
 
 

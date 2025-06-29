@@ -9,31 +9,21 @@
  */
 
 module.exports.routes = {
-
-  'POST /api/auth/register': {
-    controller: 'AuthController',
-    action: 'register',
-  },
-  'POST /api/user/student': {
-    controller: 'UserController',
-    action: 'student',
-  },
-    'GET /api/user/student': {
-    controller: 'UserController',
-    action: 'show',
-  },
-  'GET /api/user/student/:id': {
-    controller: 'UserController',
-    action: 'show',
-  },
-
-  'DELETE /api/user/student/:id': {
-    controller: 'UserController',
-    action: 'delete',
-  },
-
-
-
-
-
+ // API routes
+'POST /api/product': {
+   controller: 'ProductController',
+   action: 'product'
+ },
+ 'GET /api/product/:id?': {
+   controller: 'ProductController',
+   action: 'show'
+ },
+ 'PUT /api/product/:id': {
+   controller: 'ProductController',
+   action: 'update'
+ },
+ 'DELETE /api/product/:id': {
+   controller: 'ProductController',
+   action: 'delete'
+ }
 };
