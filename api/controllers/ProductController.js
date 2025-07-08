@@ -75,18 +75,6 @@ module.exports = {
 
   // Lấy 1 hoặc nhiều sản phẩm
   show: async (req, res) => {
-    // try {
-    //   const id = req.param('id');
-    //   const result = id ? await Product.findOne({ id }) : await Product.find().sort('createdAt DESC');
-    //   if (!result || (Array.isArray(result) && !result.length)) {
-    //     return res.notFound({ error: 'Không tìm thấy sản phẩm.' });
-    //   }
-    //   return res.ok(result); // httpcode: 200.   {err:0, data:[]|{}, message:'success|error message'}
-    //   return
-    // } catch (err) {
-    //   return res.serverError({ error: err.message });
-    // }
-
     try {
       const { id } = req.params;
       const options = {};
@@ -132,26 +120,6 @@ module.exports = {
     } catch (error) {
       return res.serverError({ err: 1, message: error.message });
     }
-    // req.file('image').upload({
-    //   dirname: path.resolve(sails.config.appPath, './.tmp/public/uploads'),
-    // }, async (err, uploadedFiles) => {
-    //   if (err) return res.serverError(err);
-
-    //   const { name, price, description } = req.body;
-    //   const updateData = { name, price, description };
-
-    //   if (uploadedFiles.length) {
-    //     updateData.image = '/uploads/' + path.basename(uploadedFiles[0].fd);
-    //   }
-
-    //   try {
-    //     const updated = await Product.updateOne({ id }).set(updateData);
-    //     if (!updated) return res.notFound({ error: 'Không tìm thấy sản phẩm.' });
-    //     return res.ok({ message: 'Cập nhật thành công', product: updated });
-    //   } catch (err) {
-    //     return res.serverError(err);
-    //   }
-    // });
   },
 
   //update ảnh
