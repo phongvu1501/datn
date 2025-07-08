@@ -9,6 +9,10 @@ module.exports = {
       type: 'number',
       required: true
     },
+    image: {
+      type: 'string',
+      required: true
+    },
     description: {
       type: 'string',
       required: true

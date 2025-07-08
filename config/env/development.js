@@ -30,11 +30,15 @@ module.exports = {
   *                                                                         *
   **************************************************************************/
   datastores: {
-    managerDatabase: {
+    default: {
+      // adapter: 'sails-mongo',
+      // // url: 'mongodb+srv://phongvvph52328:<db_password>@cluster0.crqbfpo.mongodb.net/',
+      // // url: 'mongodb+srv://phongvvph52328:pPVSREOW7u8BlhK1@cluster0.crqbfpo.mongodb.net/quanlyhocsinh',//pPVSREOW7u8BlhK1
+      // url: 'mongodb+srv://150105Ph213133:150105Ph213133@cluster0.crqbfpo.mongodb.net/quanlyhocsinh'
       adapter: 'sails-mongo',
-      // url: 'mongodb+srv://phongvvph52328:<db_password>@cluster0.crqbfpo.mongodb.net/',
-      // url: 'mongodb+srv://phongvvph52328:pPVSREOW7u8BlhK1@cluster0.crqbfpo.mongodb.net/quanlyhocsinh',//pPVSREOW7u8BlhK1
-      url: 'mongodb+srv://phongvvph52328:pPVSREOW7u8BlhK1@cluster0.crqbfpo.mongodb.net/quanlyhocsinh'
+      url: 'mongodb+srv://150105Ph213133:150105Ph213133@cluster0.crqbfpo.mongodb.net/quanlyhocsinh',
+      // url: 'mongodb://localhost:27017/quanlyhocsinh',
+
     }
 
 

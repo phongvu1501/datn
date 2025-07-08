@@ -14,8 +14,8 @@ module.exports.policies = {
   },
 
   UserController: {
-    student: ['verifyDevice', 'basic'], // isStudent
-  }
+    student: ['verifyDevice', 'basic', 'verifyToken'], // isStudent
+  },
 
 
 };

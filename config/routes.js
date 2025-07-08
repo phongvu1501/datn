@@ -1,15 +1,5 @@
-/**
- * Route Mappings
- * (sails.config.routes)
- *
- * Your routes tell Sails what to do each time it receives a request.
- *
- * For more information on configuring custom routes, check out:
- * https://sailsjs.com/anatomy/config/routes-js
- */
-
 module.exports.routes = {
-  // API routes
+  // Product API
   'POST /api/product': {
     controller: 'ProductController',
     action: 'product'
@@ -30,4 +20,27 @@ module.exports.routes = {
     controller: 'ProductController',
     action: 'search'
   },
+
+  // User API
+  'POST /api/user/register': {
+    controller: 'UserController',
+    action: 'register'
+  },
+  'POST /api/user/login': {
+    controller: 'UserController',
+    action: 'login',
+    policy: 'basic'
+  },
+  'POST /api/user/logout': {
+    controller: 'UserController',
+    action: 'logout',
+  },
+  'POST /api/user/update': {
+    controller: 'UserController',
+    action: 'update',
+    // policy: 'jwt'
+  },
+
+  // 🖼️ Route để truy cập ảnh từ thư mục assets/uploads
+  'GET /uploads/*': { skipAssets: false },
 };

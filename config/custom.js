@@ -101,5 +101,6 @@ module.exports.custom = {
   *                                                                          *
   ***************************************************************************/
   // …
+  jwtSecret: 'phongvu1501', // Secret key for JWT signing and verification
 
 };
