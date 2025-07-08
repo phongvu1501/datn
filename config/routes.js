@@ -16,6 +16,10 @@ module.exports.routes = {
     controller: 'ProductController',
     action: 'update'
   },
+  'PUT /api/product/:id/image': {
+    controller: 'ProductController',
+    action: 'updateImage'
+  },
   'DELETE /api/product/:id': {
     controller: 'ProductController',
     action: 'delete'

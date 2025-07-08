@@ -10,7 +10,7 @@ module.exports = {
   uploadImage: async (req, res) => {
     req.file('image').upload({
       dirname: path.resolve(sails.config.appPath, '.tmp/public/uploads'),
-      maxBytes: 10 * 1024 * 1024, 
+      maxBytes: 10 * 1024 * 1024,
     }, (err, uploadedFiles) => {
       if (err) {
         return res.serverError({
@@ -117,27 +117,83 @@ module.exports = {
     const id = req.param('id');
     if (!id) return res.badRequest({ error: 'Thiếu ID sản phẩm.' });
 
+    const { name, price, description } = req.body;
+    if (!name || !price || !description) {
+      return res.badRequest({ err: 1, message: 'Thiếu dữ liệu' });
+    }
+    try {
+      const updated = await Product.updateOne({ id }).set({
+        name,
+        price,
+        description
+      });
+      if (!updated) return res.notFound({ error: 'Không tìm thấy sản phẩm.' });
+      return res.ok({ err: 0, product: updated, message: 'Cập nhật thành công' });
+    } catch (error) {
+      return res.serverError({ err: 1, message: error.message });
+    }
+    // req.file('image').upload({
+    //   dirname: path.resolve(sails.config.appPath, './.tmp/public/uploads'),
+    // }, async (err, uploadedFiles) => {
+    //   if (err) return res.serverError(err);
+
+    //   const { name, price, description } = req.body;
+    //   const updateData = { name, price, description };
+
+    //   if (uploadedFiles.length) {
+    //     updateData.image = '/uploads/' + path.basename(uploadedFiles[0].fd);
+    //   }
+
+    //   try {
+    //     const updated = await Product.updateOne({ id }).set(updateData);
+    //     if (!updated) return res.notFound({ error: 'Không tìm thấy sản phẩm.' });
+    //     return res.ok({ message: 'Cập nhật thành công', product: updated });
+    //   } catch (err) {
+    //     return res.serverError(err);
+    //   }
+    // });
+  },
+
+  //update ảnh
+
+  updateImage: async (req, res) => {
+    const id = req.param('id');
+    if (!id) return res.badRequest({ error: 'Thiếu ID sản phẩm.' });
+
     req.file('image').upload({
-      dirname: path.resolve(sails.config.appPath, './.tmp/public/uploads'),
+      dirname: path.resolve(sails.config.appPath, '.tmp/public/uploads'),
+      maxBytes: 10 * 1024 * 1024,
     }, async (err, uploadedFiles) => {
-      if (err) return res.serverError(err);
-
-      const { name, price, description } = req.body;
-      const updateData = { name, price, description };
-
-      if (uploadedFiles.length) {
-        updateData.image = '/uploads/' + path.basename(uploadedFiles[0].fd);
+      if (err) {
+        return res.serverError({ err: 1, message: 'Lỗi upload: ' + err.message });
       }
 
+      if (!uploadedFiles || uploadedFiles.length === 0) {
+        return res.badRequest({ err: 1, message: 'Vui lòng chọn ảnh.' });
+      }
+
+      const filename = path.basename(uploadedFiles[0].fd);
+      const fileExt = path.extname(filename).toLowerCase();
+      const allowedExts = ['.jpg', '.jpeg', '.png', '.gif'];
+
+      if (!allowedExts.includes(fileExt)) {
+        fs.unlink(uploadedFiles[0].fd, () => { });
+        return res.badRequest({ err: 1, message: 'Chỉ chấp nhận ảnh jpg, jpeg, png, gif.' });
+      }
+
+      const imagePath = `/uploads/${filename}`;
+
       try {
-        const updated = await Product.updateOne({ id }).set(updateData);
-        if (!updated) return res.notFound({ error: 'Không tìm thấy sản phẩm.' });
-        return res.ok({ message: 'Cập nhật thành công', product: updated });
-      } catch (err) {
-        return res.serverError(err);
+        const updated = await Product.updateOne({ id }).set({ image: imagePath });
+        if (!updated) return res.notFound({ err: 1, message: 'Không tìm thấy sản phẩm.' });
+
+        return res.ok({ err: 0, data: updated, path: imagePath, message: 'Cập nhật ảnh thành công' });
+      } catch (error) {
+        return res.serverError({ err: 1, message: error.message });
       }
     });
   },
+
 
   // Xoá sản phẩm
   delete: async (req, res) => {
