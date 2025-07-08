@@ -1,5 +1,9 @@
 module.exports.routes = {
   // Product API
+  'POST /api/product/upload': {
+    controller: 'ProductController',
+    action: 'uploadImage'
+  },
   'POST /api/product': {
     controller: 'ProductController',
     action: 'product'

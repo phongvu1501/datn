@@ -36,8 +36,8 @@ module.exports = {
       // // url: 'mongodb+srv://phongvvph52328:pPVSREOW7u8BlhK1@cluster0.crqbfpo.mongodb.net/quanlyhocsinh',//pPVSREOW7u8BlhK1
       // url: 'mongodb+srv://150105Ph213133:150105Ph213133@cluster0.crqbfpo.mongodb.net/quanlyhocsinh'
       adapter: 'sails-mongo',
-      url: 'mongodb+srv://150105Ph213133:150105Ph213133@cluster0.crqbfpo.mongodb.net/quanlyhocsinh',
-      // url: 'mongodb://localhost:27017/quanlyhocsinh',
+      // url: 'mongodb+srv://150105Ph213133:150105Ph213133@cluster0.crqbfpo.mongodb.net/quanlyhocsinh',
+      url: 'mongodb://127.0.0.1:27017/quanlyhocsinh',
 
     }
 
