@@ -3,7 +3,8 @@ module.exports = {
     token: {
       type: 'string',
       required: true,
-      description: 'Token đại diện cho phiên đăng nhập'
+      description: 'Token đại diện cho phiên đăng nhập',
+      unique: true,
     },
 
     client: {

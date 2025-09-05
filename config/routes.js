@@ -1,5 +1,5 @@
 module.exports.routes = {
-  // Product API
+  // ===========================
   'POST /api/product/upload': {
     controller: 'ProductController',
     action: 'uploadImage'
@@ -29,26 +29,105 @@ module.exports.routes = {
     action: 'search'
   },
 
-  // User API
+  // ===========================
   'POST /api/user/register': {
     controller: 'UserController',
     action: 'register'
   },
   'POST /api/user/login': {
     controller: 'UserController',
-    action: 'login',
-    policy: 'basic'
+    action: 'login'
   },
   'POST /api/user/logout': {
     controller: 'UserController',
-    action: 'logout',
+    action: 'logout'
   },
   'POST /api/user/update': {
     controller: 'UserController',
-    action: 'update',
-    // policy: 'jwt'
+    action: 'update'
   },
 
-  // 🖼️ Route để truy cập ảnh từ thư mục assets/uploads
+  // ===========================
+  'POST /api/user/:id/assign-permissions': {
+    controller: 'PermissionController',
+    action: 'assignPermissions'
+  },
+
+  'GET /api/permission/list': {
+    controller: 'PermissionController',
+    action: 'list'
+  },
+  'POST /api/permission/create': {
+    controller: 'PermissionController',
+    action: 'create'
+  },
+  'DELETE /api/permission/:id': {
+    controller: 'PermissionController',
+    action: 'delete'
+  },
+
+  // ===========================
+  'GET /api/account/list': {
+    controller: 'AccountController',
+    action: 'listUser'
+  },
+  'DELETE /api/account/:id': {
+    controller: 'AccountController',
+    action: 'destroy'
+  },
+  'GET /api/user/me': {
+    controller: 'UserController',
+    action: 'getProfile'
+  },
+
+  // ===========================
   'GET /uploads/*': { skipAssets: false },
+
+
+  'GET /api/page': {
+    controller: 'DynamicPageController',
+    action: 'getAll'
+  },
+  'GET /api/dynamic-page/:id': {
+    controller: 'DynamicPageController',
+    action: 'getOne'
+  },
+  'POST /api/dynamic-page': {
+    controller: 'DynamicPageController',
+    action: 'getCreate'
+  },
+  'PUT /api/dynamic-page/:id': {
+    controller: 'DynamicPageController',
+    action: 'getUpdate'
+  },
+
+  'DELETE /api/dynamic-page/:id': {
+    controller: 'DynamicPageController',
+    action: 'deletePage'
+  },
+
+  // ===========================
+
+  'POST /api/user-role/set': {
+    controller: 'UserRoleController',
+    action: 'setUserRole'
+  },
+
+  'GET /api/user-role/list': {
+    controller: 'UserRoleController',
+    action: 'getListUserRole'
+  },
+
+  // ===========================
+  'POST /api/permission/getListPermission': {
+    controller: 'PermissionController',
+    action: 'getListPermission'
+  },
+  'POST /api/permission/createPermission': {
+    controller: 'PermissionController',
+    action: 'createPermission'
+  },
+
+
+
 };

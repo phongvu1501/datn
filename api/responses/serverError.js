@@ -4,6 +4,6 @@ module.exports = function serverError(error) {
     console.log('serverError', error);
     return res.status(200).json({
         errorCode: 500,
-        errorMsg: 'Lỗi hệ thống',
+        errorMsg: error?.message || 'Lỗi hệ thống',
     });
 };

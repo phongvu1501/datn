@@ -9,13 +9,25 @@
  */
 
 module.exports.policies = {
+  '*': false, // Default policy for all controllers and actions (allow public access)
   AuthController: {
     register: ['verifyDevice', 'basic'], // 
+    login: ['verifyDevice', 'basic'],
   },
 
   UserController: {
-    student: ['verifyDevice', 'basic', 'verifyToken'], // isStudent
+    register: [],
+    login: [],
+    logout: ['bearer'],
+    update: ['bearer', 'checkRole'],
+    getProfile: ['bearer'],
+    student: ['verifyDevice', 'basic', 'bearer'],
+
   },
-
-
+  UserRoleController: {
+    getListUserRole: ['bearer'],
+  },
+  ProductController: {
+    products: ['bearer'],
+  }
 };

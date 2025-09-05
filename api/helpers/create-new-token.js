@@ -5,6 +5,10 @@ module.exports = {
 
   inputs: {
     user: { type: 'ref', required: true },
+    client: { type: 'string', defaultsTo: 'web' },
+    deviceId: { type: 'string', defaultsTo: '' },
+    channel: { type: 'string', defaultsTo: 'web' },
+    ip: { type: 'string', defaultsTo: '' }
   },
 
   fn: async function (inputs) {
@@ -15,9 +19,22 @@ module.exports = {
       { expiresIn: '1h' }
     );
 
+    const expiredAt = new Date(Date.now() + expiresInMs);
+
+    await Token.create({
+      token,
+      client: inputs.client || 'web',
+      expiredAt,
+      user: inputs.user.id,
+      deviceId: inputs.deviceId || '',
+      channel: inputs.channel || 'web',
+      ip: inputs.ip || '',
+      status: 1
+    });
+
     return {
       token,
-      expiresAt: Date.now() + expiresInMs,
+      expiresAt: expiredAt.getTime()
     };
   }
 };

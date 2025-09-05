@@ -1,6 +1,6 @@
-function escapeRegex(str) {
-  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
+// function escapeRegex(str) {
+//   return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// }
 
 const path = require('path');
 const fs = require('fs');

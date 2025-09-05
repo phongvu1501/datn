@@ -72,19 +72,19 @@ module.exports = {
       });
 
       if (!isValid) {
-        return res.badRequest({ err: 3, errMsg: 'Sai mật khẩu' });
+        return res.badRequest({ err: 3, errMsg: 'Sai mật khẩu' });_
       }
 
       const tokenInfo = await sails.helpers.createNewToken.with({ user });
 
       return res.ok({
+        err: 0,
+        errMsg: 'Đăng nhập thành công',
         data: {
           token: tokenInfo.token,
           expiresAt: tokenInfo.expiresAt,
           tokenType: 'Bearer',
-        },
-        err: 0,
-        errMsg: 'Đăng nhập thành công',
+        }
       });
 
     } catch (error) {
@@ -94,57 +94,31 @@ module.exports = {
   },
 
   //Đăng xuất
- logout: async function (req, res) {
-  try {
-    const token = req.token; // Lấy từ policy đã xác thực
+  logout: async function (req, res) {
+    try {
+      const token = req.token; // Lấy từ policy đã xác thực
 
-    const deletedToken = await Token.destroy({ token });
-    if(!deletedToken) {
-      return res.notFound({ message: 'Token không tồn tại hoặc đã bị xóa.' });
+      const deletedToken = await Token.destroy({ token });
+      if (!deletedToken) {
+        return res.notFound({ message: 'Token không tồn tại hoặc đã bị xóa.' });
+      }
+
+      return res.ok({ message: 'Đăng xuất thành công.' });
+    } catch (err) {
+      sails.log.error('Logout error:', err);
+      return res.serverError({ message: 'Có lỗi xảy ra khi đăng xuất.' });
     }
-
-    return res.ok({ message: 'Đăng xuất thành công.' });
-  } catch (err) {
-    sails.log.error('Logout error:', err);
-    return res.serverError({ message: 'Có lỗi xảy ra khi đăng xuất.' });
-  }
-},
+  },
 
   // Cập nhật thông tin người dùng
   update: async function (req, res) {
     try {
-      const { username, email, phone } = req.body;
 
+      const { email, phone } = req.body;
+      const { id: userId } = req.user
       // Kiểm tra đầu vào
-      if (!username || !email || !phone) {
+      if (!email || !phone) {
         return res.badRequest({ err: 1, errMsg: 'Thiếu dữ liệu' });
-      }
-
-      // Lấy userId từ JWT đã xác thực
-      const userId = req.user && req.user.id;
-      if (!userId) {
-        return res.forbidden({ err: 2, errMsg: 'Bạn không có quyền truy cập' });
-      }
-
-      // Kiểm tra người dùng tồn tại
-      const user = await User.findOne({ id: userId });
-      if (!user) {
-        return res.notFound({ err: 3, errMsg: 'Người dùng không tồn tại' });
-      }
-
-      // Kiểm tra token hợp lệ
-      const token = req.token || req.headers.authorization?.replace('Bearer ', '');
-      if (!token) {
-        return res.forbidden({ err: 4, errMsg: 'Thiếu token' });
-      }
-
-      const tokenInfo = await sails.helpers.verifyToken.with({ token, user });
-      if (!tokenInfo || !tokenInfo.isValid) {
-        return res.forbidden({ err: 5, errMsg: 'Token không hợp lệ' });
-      }
-
-      if (tokenInfo.isExpired) {
-        return res.forbidden({ err: 6, errMsg: 'Token đã hết hạn' });
       }
 
       // Kiểm tra email hợp lệ
@@ -155,7 +129,7 @@ module.exports = {
 
       // Cập nhật thông tin người dùng
       const updatedUser = await User.updateOne({ id: userId }).set({
-        username,
+
         email,
         phone
       });
@@ -170,6 +144,41 @@ module.exports = {
       sails.log.error('Lỗi trong update:', err);
       return res.serverError({ err: 9, errMsg: 'Có lỗi xảy ra ở máy chủ', detail: err.message });
     }
-  }
+  },
+
+
+
+
+  getProfile: async function (req, res) {
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.forbidden({ errCode: 1, message: 'Bạn chưa đăng nhập.' });
+    }
+
+    const user = await User.findOne({ id: userId })
+    console.log('user', req.user);
+    const roles = await UserRole.find({ id: user.roles });
+    if (!roles.length) {
+      return res
+    }
+    const lisIdMenu = roles.map(x => x.menus).flat();
+    const menus = await Menu.find({ id: lisIdMenu });
+    if (!user) {
+      return res.notFound({ errCode: 1, message: 'Không tìm thấy người dùng.' });
+    }
+
+    return res.ok({
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        menus: menus
+      }
+    });
+  },
+
+
+
 
 };
